@@ -22,6 +22,18 @@ module CouchPotato
             var results = #{@results_ruby.to_json};
             var listed = '';
             var list = #{view_spec.list_function};
+            var lib = #{view_spec.respond_to?(:lib) && view_spec.lib.to_json};
+            var require = function(modulePath) {
+              var module = {exports: {}};
+              var exports = module.exports;
+              var pathArray = modulePath.split("/").slice(2);
+              var result = lib;
+              for (var i in pathArray) {
+                result = result[pathArray[i]];
+              }
+              eval(result);
+              return module.exports;
+            }
 
             var getRow = function() {
               return results.rows.shift();

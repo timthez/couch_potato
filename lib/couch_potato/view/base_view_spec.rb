@@ -12,7 +12,6 @@ module CouchPotato
         @list_name = normalized_view_parameters.delete(:list) || options[:list]
         @language = options[:language] || Config.default_language
 
-        assert_valid_view_parameters normalized_view_parameters
         @klass = klass
         @design_document = translate_to_design_doc_name(klass.to_s, view_name, @list_name)
         @view_name = view_name
@@ -61,16 +60,6 @@ module CouchPotato
           params[:endkey] = key.last
         end
         params
-      end
-
-      def assert_valid_view_parameters(params)
-        params.keys.each do |key|
-          raise ArgumentError.new("invalid view parameter: #{key}") unless valid_view_parameters.include?(key.to_s)
-        end
-      end
-
-      def valid_view_parameters
-        %w(key keys startkey startkey_docid endkey endkey_docid limit stale descending skip group group_level reduce include_docs inclusive_end)
       end
 
       def translate_to_design_doc_name(klass_name, view_name, list_name)

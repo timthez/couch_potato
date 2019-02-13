@@ -91,7 +91,7 @@ module CouchPotato
               unfilteredMapResults.push({key: key, value: value});
             };
             for (var i in docs) {
-              map(docs[i]);
+              map(JSON.parse(JSON.stringify(docs[i])));
             }
 
             // Filter results by key/keys/startkey/endkey (if given).
@@ -170,15 +170,15 @@ module CouchPotato
                 var mid = parseInt(group.values.length / 2);
                 var keys1 = (group.keys || []).slice(0, mid),
                     values1 = group.values.slice(0, mid);
-                var reduced1 = reduce(keys1, values1, false);
+                var reduced1 = reduce(keys1, JSON.parse(JSON.stringify(values1)), false);
                 var keys2 = (group.keys || []).slice(mid, group.values.length),
                     values2 = group.values.slice(mid, group.values.length);
-                var reduced2 = reduce(keys2, values2, false);
-                reduced = reduce(null, [reduced1, reduced2], true);
+                var reduced2 = reduce(keys2, JSON.parse(JSON.stringify(values2)), false);
+                reduced = reduce(null, JSON.parse(JSON.stringify([reduced1, reduced2])), true);
               } else {
                 // Not enough values to split, so just reduce, and then rereduce the single result
-                reduced = reduce(group.keys, group.values, false);
-                reduced = reduce(null, [reduced], true);
+                reduced = reduce(group.keys, JSON.parse(JSON.stringify(group.values)), false);
+                reduced = reduce(null, JSON.parse(JSON.stringify([reduced])), true);
               }
               results.push({key: group.groupedKey, value: reduced});
             }
